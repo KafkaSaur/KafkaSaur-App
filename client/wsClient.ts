@@ -1,18 +1,20 @@
 /** @format */
 
-import {
-  WebSocketClient,
-  StandardWebSocketClient,
-} from 'https://deno.land/x/websocket@v0.1.1/mod.ts';
-const endpoint = 'ws://127.0.0.1:8080';
+const ws = new WebSocket('ws://localhost:8080');
 
-const ws: WebSocketClient = new StandardWebSocketClient(endpoint);
+// Register event listeners for the open, close, and message events
+ws.onopen = () => {
+  console.log('WebSocket ready!');
 
-ws.on('open', function () {
-  console.log('ws connected!');
-});
-ws.on('message', function (message: string) {
-  console.log(message);
-});
-// ws.send('something');
-console.log(ws.on);
+  // Send a message over the WebSocket to the server
+  ws.send('Hello World!');
+};
+ws.onmessage = (message) => {
+  // Log the message we recieve:
+  console.log('Received data:', message.data);
+
+  // Close the websocket after receiving the message
+  ws.close();
+};
+ws.onclose = () => console.log('WebSocket closed!');
+ws.onerror = (err) => console.log('WebSocket error:');
